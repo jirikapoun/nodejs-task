@@ -1,8 +1,8 @@
 {
   "name": "nodejs-task",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "0.0.2",
+  "description": "Sample Node.js application",
+  "author": "Jiri Kapoun",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

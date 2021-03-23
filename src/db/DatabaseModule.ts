@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Order } from './entity/Order';
+import { OrderItem } from './entity/OrderItem';
 import { OrderService } from './service/OrderService';
 
 /**
@@ -17,6 +18,7 @@ import { OrderService } from './service/OrderService';
       database: process.env.DB_NAME,
       synchronize: true,
       logging: !!process.env.DEBUG,
+      entities: [Order, OrderItem],
     }),
     TypeOrmModule.forFeature([Order]),
   ],
