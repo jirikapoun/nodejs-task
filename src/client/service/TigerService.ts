@@ -1,4 +1,5 @@
 import { HttpService, Injectable, Logger } from '@nestjs/common';
+import { TigerCreateOrderError } from '../error/TigerCreateOrderError';
 import { TigerCreateOrderRequest } from '../type/TigerCreateOrderRequest';
 import { TigerGetOrderStateResponse } from '../type/TigerGetOrderStateResponse';
 
@@ -15,12 +16,22 @@ export class TigerService {
 
   async createOrder(request: TigerCreateOrderRequest) {
     this.logger.verbose('Sending order #' + request.OrderID + ' to Tiger API');
-    request.OrderID = request.OrderID.toString(); // necessary to avoid issues with data types
-    await this.httpService
-      .post(this.baseUrl + '/api/orders', request, {
-        headers: { Authorization: 'Basic ' + this.token },
-      })
-      .toPromise();
+    try {
+      request.OrderID = request.OrderID.toString(); // necessary to avoid issues with data types
+      await this.httpService
+        .post(this.baseUrl + '/api/orders', request, {
+          headers: { Authorization: 'Basic ' + this.token },
+        })
+        .toPromise();
+    } catch (error) {
+      this.logger.error(
+        'Sending order #' +
+          request.OrderID +
+          ' to Tiger API failed: ' +
+          error.message,
+      );
+      throw new TigerCreateOrderError(request, error);
+    }
   }
 
   async getOrderState(orderId: string): Promise<TigerGetOrderStateResponse> {

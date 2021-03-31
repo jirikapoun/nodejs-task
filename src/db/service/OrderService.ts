@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
 import { config } from '../../config';
 import { Order } from '../entity/Order';
+import { OrderCreationError } from '../error/OrderCreationError';
 
 /**
  * Provides database operations for Order entities.
@@ -27,7 +28,17 @@ export class OrderService {
 
   async createOrder(order: Order) {
     this.logger.verbose('Saving order #' + order.orderId + ' to database');
-    return this.orderRepository.save(order);
+    try {
+      return await this.orderRepository.save(order);
+    } catch (error) {
+      this.logger.error(
+        'Saving order #' +
+          order.orderId +
+          ' to database failed: ' +
+          error.message,
+      );
+      throw new OrderCreationError(order, error);
+    }
   }
 
   async updateOrder(order: Order) {

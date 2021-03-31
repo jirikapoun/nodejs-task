@@ -1,12 +1,29 @@
-import { Body, Controller, Logger, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Logger,
+  Post,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
 import { TigerService } from '../../client/service/TigerService';
 import { OrderService } from '../../db/service/OrderService';
+import { OrderCreationErrorFilter } from '../filter/OrderCreationErrorFilter';
+import { TigerCreateOrderErrorFilter } from '../filter/TigerCreateOrderErrorFilter';
+import { UnknownCarrierErrorFilter } from '../filter/UnknownCarrierErrorFilter';
+import { UnknownCountryErrorFilter } from '../filter/UnknownCountryErrorFilter';
 import { TokenAuthGuard } from '../guard/TokenAuthGuard';
-import { CreateOrderRequest } from '../type/CreateOrderRequest';
 import { ConvertOrderService } from '../service/ConvertOrderService';
+import { CreateOrderRequest } from '../type/CreateOrderRequest';
 
 @Controller('orders')
 @UseGuards(TokenAuthGuard)
+@UseFilters(
+  UnknownCountryErrorFilter,
+  UnknownCarrierErrorFilter,
+  OrderCreationErrorFilter,
+  TigerCreateOrderErrorFilter,
+)
 export class OrderController {
   private readonly logger = new Logger(OrderController.name);
 

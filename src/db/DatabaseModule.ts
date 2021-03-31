@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppError } from './entity/AppError';
 import { Order } from './entity/Order';
 import { OrderItem } from './entity/OrderItem';
+import { AppErrorService } from './service/AppErrorService';
 import { OrderService } from './service/OrderService';
 
 /**
@@ -18,11 +20,11 @@ import { OrderService } from './service/OrderService';
       database: process.env.DB_NAME,
       synchronize: true,
       logging: !!process.env.DEBUG,
-      entities: [Order, OrderItem],
+      entities: [AppError, Order, OrderItem],
     }),
-    TypeOrmModule.forFeature([Order]),
+    TypeOrmModule.forFeature([AppError, Order]),
   ],
-  providers: [OrderService],
-  exports: [OrderService],
+  providers: [AppErrorService, OrderService],
+  exports: [AppErrorService, OrderService],
 })
 export class DatabaseModule {}

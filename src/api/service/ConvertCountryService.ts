@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { config } from '../../config';
+import { UnknownCountryError } from '../error/UnknownCountryError';
 
 /**
  * Helper class for country-related value conversions.
@@ -9,7 +10,7 @@ export class ConvertCountryService {
   countryToCountryCode(country: string): string {
     const countryCode = config.countryCodes[country];
     if (!countryCode) {
-      throw new Error('Unknown country: "' + country + '"');
+      throw new UnknownCountryError(country);
     } else {
       return countryCode;
     }
